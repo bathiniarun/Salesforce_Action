@@ -25,11 +25,19 @@ jobs:
       # Step to install dependencies
       - name: Install Vlocity Build Tool
         run:  npm install -g vlocity
+        shell: bash  # Specify the shell type
 
-      # Verify installation
-    run: |
-      if ! vlocity-build -version &> /dev/null; then
-        echo "Failed to install or find vlocity-build."
-        exit 1
-      fi
-    shell: bash  # Specify bash as the shell
+      # Verify installation and install application dependencies
+      - name: Verify installation and install application dependencies
+        run: |
+          # Verify installation of vlocity-build
+          if ! vlocity-build -version &> /dev/null; then
+            echo "Failed to install or find vlocity-build."
+            exit 1
+          fi
+          
+          # Install other application dependencies
+          npm install
+        shell: bash  # Specify the shell type
+
+      
