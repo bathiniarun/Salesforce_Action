@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "Salesforce App",
   "scripts": {
+    "build": "vlocity-build --job VlocityCard/VlocityCard/test2/VlocityCard/test2",
     "lint": "eslint **/{aura,lwc}/**",
     "test": "npm run test:unit",
     "test:unit": "sfdx-lwc-jest",
