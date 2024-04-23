@@ -19,4 +19,5 @@ jobs:
           node-version: '14'
       
       - name: Install Vlocity Build
-        run: npm install -g VlocityCard/test2
+        run: npm install -g git+https://github.com/VlocityCard/test2.git
+
