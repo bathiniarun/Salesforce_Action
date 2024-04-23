@@ -1,24 +1,38 @@
-name: build
+name: Build and Test React Application
 
 on:
+  # Triggers the workflow on push or pull request events in the main branch
   push:
     branches:
       - main
 
 jobs:
   build:
+    name: Build and Test
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
+      # Checkout the repository
+      - name: Checkout repository
         uses: actions/checkout@v3
-        
-      - name: Set up Node.js
+
+      # Setup Node.js environment
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14'  # Specify Node.js version 14
-      
-      - name: Install Vlocity Build
-        run:  npm install 
+          node-version: '14'  # Specify the Node.js version
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Run tests
+      - name: Run tests
+        run: npm test
+
+      # Build the React application
       - name: Build application
         run: npm run build
+      
+      # Optionally, you can add steps to deploy the built application if needed
+
