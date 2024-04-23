@@ -24,31 +24,5 @@ jobs:
 
       # Step to install dependencies
       - name: Install Vlocity Build Tool
-        run: |
-          # Install the Vlocity Build Tool globally
-          npm install -g vlocity
-        
-        # Verify installation
-        shell: bash
-          if ! vlocity-build -version &> /dev/null; then
-            echo "Failed to install or find vlocity-build."
-            exit 1
-          fi
-
-      # Step to install application dependencies
-      - name: Install application dependencies
-        run: npm install
-
-      # Step to build the React application
-      - name: Build application
-        run: |
-          # Before running the build, verify the installation of vlocity-build
-          if ! command -v vlocity-build &> /dev/null; then
-            echo "vlocity-build command not found in PATH. Exiting."
-            exit 1
-          fi
-          
-          # Run the build command
-          npm run build
-
-      # Add additional steps if you want to deploy the built application or perform other tasks
+        run:  npm install -g vlocity
+ 
