@@ -1,4 +1,4 @@
-name: package.json
+name: build
 
 on:
   push:
@@ -19,4 +19,4 @@ jobs:
           node-version: '14'
       
       - name: Install Vlocity Build
-        run: npm install -g vlocity_build
+        run: npm install -g VlocityCard/test2
