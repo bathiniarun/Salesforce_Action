@@ -29,3 +29,15 @@ jobs:
 
       - name: Build project
         run: npm run build
+        
+  # Create and publish artifact (e.g., Docker image)
+      - name: Create and publish Docker image
+        run: |
+          # Create the Docker image
+          docker build -t vlocity-artifact .
+
+      # Tag the artifact
+      - name: Tag Docker image
+        run: |
+          # Tag the Docker image
+          docker tag vlocity-artifact ${ACR_URL}/vlocity-artifact:latest
