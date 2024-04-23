@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  Build:
     runs-on: ubuntu-latest
     
     steps:
@@ -19,5 +19,5 @@ jobs:
           node-version: '14'
       
       - name: Install Vlocity Build
-        run: npm install -g git+https://github.com/bathiniarun/Salesforce_Action/blob/main/package.json
+        run: npm install -g git+https://github.com/bathiniarun/Salesforce_Action.git
 
