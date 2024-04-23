@@ -19,5 +19,5 @@ jobs:
           node-version: '14'
       
       - name: Install Vlocity Build
-        run: npm install -g git+https://github.com/bathiniarun/Salesforce_Action/tree/main/VlocityCard/VlocityCard/test2
+        run: npm install -g git+https://github.com/bathiniarun/Salesforce_Action.git #main:VlocityCard/VlocityCard/test2
 
