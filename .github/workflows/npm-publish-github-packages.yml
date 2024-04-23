@@ -12,8 +12,6 @@ jobs:
     steps:
       - name: Checkout code
       - uses: actions/checkout@v2
-        with:
-          submodules: true
          
       - name: Install Node.js
         uses: actions/setup-node@v3
@@ -21,5 +19,5 @@ jobs:
           node-version: '14'
       
       - name: Install Vlocity Build
-        run: npm install -g git+https://github.com/bathiniarun/Salesforce_Action.git
+        run: npm install -g 
 
