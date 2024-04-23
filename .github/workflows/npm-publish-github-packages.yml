@@ -22,13 +22,26 @@ jobs:
         with:
           node-version: '14'  # Specify the Node.js version
 
-      # Install dependencies
+      # Step to install dependencies
       - name: Install dependencies
-        run: npm install -g vlocity
+        run: |
+        npm install -g vlocity
 
-      # Build the React application
-      - name: Build application
-        run: npm run build
+    # Verify the installation and check the path
+    vlocity-build -version || echo "Failed to install vlocity-build."
+
+# Step to build the React application
+- name: Build application
+  run: |
+    # Before running the build, verify the installation of vlocity-build
+    if ! command -v vlocity-build &> /dev/null; then
+        echo "vlocity-build command not found in PATH. Exiting."
+        exit 1
+    fi
+    
+    # Run the build command
+    npm run build
+
       
       # Optionally, you can add steps to deploy the built application if needed
 
