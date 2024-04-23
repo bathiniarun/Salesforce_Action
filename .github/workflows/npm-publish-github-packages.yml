@@ -1,40 +1,23 @@
-name: Build 
+name: Build Vlocity Components
 
 on:
-  # Trigger the workflow on push or pull request events in the main branch
   push:
     branches:
       - main
+
 jobs:
-  build:
-    name: Build 
+  deploy: Build
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # Setup Node.js environment
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '14'  # Specify the Node.js version
+          node-version: '14'
 
-      # Install Vlocity Build Tool
       - name: Install Vlocity Build Tool
-        run: |
-          # Install the Vlocity Build Tool globally
-          npm install -g vlocity
+        run: npm install -g vlocity@1.7.1
 
-      # Verify installation and install application dependencies
-      - name: Verify Vlocity Build Tool installation and install dependencies
-        run: |
-          # Verify installation of vlocity-build
-          if ! command -v vlocity-build &> /dev/null; then
-            echo "Failed to install or find vlocity-build."
-            exit 1
-          fi
-
-          # Install other application dependencies
-          npm install
