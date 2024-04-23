@@ -30,7 +30,6 @@ jobs:
         
         # Verify installation
         shell: bash
-        run: |
           if ! vlocity-build -version &> /dev/null; then
             echo "Failed to install or find vlocity-build."
             exit 1
