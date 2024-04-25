@@ -27,7 +27,7 @@ jobs:
       - name: Build project
         run: npm run build
 
-jobs:
+
   create-pr:
     name: Create Pull Request from Feature to Dev
     runs-on: ubuntu-latest
