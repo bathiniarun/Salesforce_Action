@@ -1,1 +1,45 @@
+name: Feature to Dev PR Workflow
 
+on:
+  push:
+    branches:
+      - 'feature/*'  # Triggers on pushes to feature/* branches
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install Salesforce CLI
+        uses: sfdx-actions/setup-sfdx@v1
+      
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+jobs:
+  create-pr:
+    name: Create Pull Request from Feature to Dev
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.GIT_TOKEN }}
+          source: ${{ github.ref }}
+          destination: Dev
+          title: "PR from ${GITHUB_HEAD_REF} to dev"
+          body: |
+            Automatically created PR from feature branch to dev.
+          reviewers: ['bathiniarun']  # Specify the usernames of reviewers
+          draft: false  # Specify whether the PR should be created as a draft
