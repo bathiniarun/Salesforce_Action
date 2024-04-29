@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-    
+
     steps:
       # Step 1: Checkout code
       - name: Checkout code
@@ -25,7 +25,7 @@ jobs:
       # Step 3: Install Salesforce CLI
       - name: Install Salesforce CLI
         uses: sfdx-actions/setup-sfdx@v1
-      
+
       # Step 4: Install dependencies
       - name: Install dependencies
         run: npm install
@@ -56,23 +56,25 @@ jobs:
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
             -d "{\"title\":\"$pr_title\",\"head\":\"$branch_name\",\"base\":\"$base_branch\"}" \
             "$api_url"
 
       # Step 7: Check for merge conflicts and handle them
       - name: Check merge conflicts and handle them
         run: |
-          pr_number=$(gh pr list --base "Dev" --head "${{ github.head_ref }}" --json "number" --jq '.[] | .number')
+          # Get the PR number from the GitHub CLI command
+          pr_number=$(gh pr list --base "Dev" --head "${{ github.head_ref }}" --json "number" --jq '.[].number')
 
+          # Check if the PR number is empty
           if [ -z "$pr_number" ]; then
               echo "No pull request found."
               exit 1
           fi
 
-          # Check merge status
+          # Get the merge status
           mergeable=$(gh pr view "$pr_number" --json mergeable --jq '.mergeable')
 
+          # Merge the PR if mergeable
           if [ "$mergeable" == "true" ]; then
               echo "Merging PR #$pr_number..."
               gh pr merge "$pr_number" --merge --delete-branch
