@@ -83,7 +83,7 @@ jobs:
 
           # Fetch the base branch (Dev) and merge into the current feature branch
           git fetch origin Dev
-          git merge origin/Dev '--allow-unrelated-histories'
+          git merge origin/Dev '--on-commmit'
 
           # Check if there were any conflicts
           if [ "$(git ls-files -u | wc -l)" -gt 0 ]; then
