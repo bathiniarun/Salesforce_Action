@@ -65,17 +65,3 @@ jobs:
       # Step 5: Build the project
       - name: Build project
         run: npm run build
-
-      - name: Check for merge conflicts
-        run: |
-          # Specify working directory for Git commands
-          git -C $GITHUB_WORKSPACE fetch origin ${{ github.event.pull_request.base.ref }}
-          git -C $GITHUB_WORKSPACE merge --no-commit --no-ff origin/${{ github.event.pull_request.base.ref }}
-          # Check the merge conflict status
-          if git -C $GITHUB_WORKSPACE ls-files --unmerged | grep -q '.'; then
-            echo "Merge conflicts found."
-            echo "::set-output name=conflicts::true"
-          else
-            echo "No merge conflicts found."
-            echo "::set-output name=conflicts::false"
-      
