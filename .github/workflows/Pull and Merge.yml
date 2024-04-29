@@ -34,5 +34,5 @@ jobs:
 
           curl -X POST \
             -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -d '{"title":"Feature changes from '"$branch_name"'","head":"'"$branch_name"'","base":"dev"}' \
+            -d '{"title":"Feature changes from '"$branch_name"'","head":"'"$branch_name"'","base":"Dev"}' \
             "https://api.github.com/repos/${{ github.repository }}/pulls"
