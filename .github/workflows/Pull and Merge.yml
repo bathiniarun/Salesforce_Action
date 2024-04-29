@@ -1,5 +1,4 @@
-name: Feature to PR Workflow
-Dev
+name: Feature to Dev Pull Request Workflow
 
 on:
   push:
