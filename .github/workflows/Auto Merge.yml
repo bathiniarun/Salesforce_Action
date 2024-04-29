@@ -1,0 +1,58 @@
+name: Auto Merge Pull Request
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Check if the pull request meets the auto-merge criteria
+      - name: Check PR criteria
+        id: check
+        run: |
+          # Use jq to parse the GitHub context
+          pr_data=$(echo "${{ toJson(github.event.pull_request) }}" | jq)
+          
+          # Criteria for auto-merge
+          approvals_required=1 # Number of required approvals (change as needed)
+          
+          # Check if the PR has the required approvals and the CI checks have passed
+          approvals_count=$(echo "$pr_data" | jq '.requested_reviewers | length')
+          mergeable=$(echo "$pr_data" | jq -r '.mergeable')
+          ci_checks_passed=$(echo "$pr_data" | jq -r '.head.sha')
+          
+          if [[ "$approvals_count" -ge $approvals_required && "$mergeable" == "true" && ! -z "$ci_checks_passed" ]]; then
+            echo "PR meets auto-merge criteria."
+            echo "can_auto_merge=true" >> $GITHUB_ENV
+          else:
+            echo "PR does not meet auto-merge criteria."
+            echo "can_auto_merge=false" >> $GITHUB_ENV
+          fi
+
+      # Step 3: Automatically merge the pull request if criteria are met
+      - name: Auto-merge PR
+        if: steps.check.outputs.can_auto_merge == 'true'
+        run: |
+          # Merge the pull request using the GitHub API
+          pr_number="${{ github.event.pull_request.number }}"
+          
+          # Define the GitHub API URL for merging the PR
+          api_url="https://api.github.com/repos/${{ github.repository }}/pulls/$pr_number/merge"
+          
+          # Send a PUT request to merge the PR
+          curl -X PUT \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d '{"merge_method": "merge"}' \
+            "$api_url"
