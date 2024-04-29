@@ -82,7 +82,7 @@ jobs:
          # Use GitHub Actions' GITHUB_TOKEN to authenticate and set identity automatically
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          
+
           # Fetch the base branch (Dev) and merge into the current feature branch
           git fetch origin Dev
           git merge origin/Dev '--allow-unrelated-histories'
