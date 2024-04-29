@@ -59,26 +59,4 @@ jobs:
             -d "{\"title\":\"$pr_title\",\"head\":\"$branch_name\",\"base\":\"$base_branch\"}" \
             "$api_url"
 
-      # Step 7: Check for merge conflicts and handle them
-      - name: Check merge conflicts and handle them
-        run: |
-          # Get the PR number from the GitHub CLI command
-          pr_number=$(gh pr list --base "Dev" --head "${{ github.head_ref }}" --json "number" --jq '.[].number')
-
-          # Check if the PR number is empty
-          if [ -z "$pr_number" ]; then
-              echo "No pull request found."
-              exit 1
-          fi
-
-          # Get the merge status
-          mergeable=$(gh pr view "$pr_number" --json mergeable --jq '.mergeable')
-
-          # Merge the PR if mergeable
-          if [ "$mergeable" == "true" ]; then
-              echo "Merging PR #$pr_number..."
-              gh pr merge "$pr_number" --merge --delete-branch
-              echo "PR #$pr_number merged successfully."
-          else:
-              echo "Merge conflicts detected in PR #$pr_number."
-              exit 1
+      
