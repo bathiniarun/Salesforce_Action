@@ -1,5 +1,3 @@
-name: Feature to Dev Pull Request Workflow
-
 on:
   push:
     branches:
@@ -94,3 +92,4 @@ jobs:
           else
             echo "No merge conflicts found."
           fi
+
