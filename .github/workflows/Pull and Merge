@@ -27,19 +27,12 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Create Pull Request
+        run: |
+          # Extract branch name
+          branch_name=$(echo "${{ github.ref }}" | awk -F'/' '{print $NF}')
 
-  create-pr:
-    name: Create Pull Request from Feature to Dev
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create PR
-        uses: peter-evans/create-pull-request@v4
-        with:
-          token: ${{ secrets.GIT_TOKEN }}
-          source: ${{ github.ref }}
-          destination: Dev
-          title: "PR from ${GITHUB_HEAD_REF} to dev"
-          body: |
-            Automatically created PR from feature branch to dev.
-          reviewers: ['bathiniarun']  # Specify the usernames of reviewers
-          draft: false  # Specify whether the PR should be created as a draft
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -d '{"title":"Feature changes from '"$branch_name"'","head":"'"$branch_name"'","base":"dev"}' \
+            "https://api.github.com/repos/${{ github.repository }}/pulls"
