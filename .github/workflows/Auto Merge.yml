@@ -1,7 +1,13 @@
 name: Auto Merge Pull Request
 
 on:
-  pull_request:
+
+ push:
+   branches:
+    - Dev
+ pull_request:
+    branches:
+    - Dev
     types:
       - opened
       - reopened
