@@ -68,7 +68,7 @@ jobs:
         run: npm run build
 
   check-conflicts:
-    name: Check Merge Conflicts
+    name: Checking Merge Conflicts
     runs-on: ubuntu-latest
     needs: pr-creation
     steps:
