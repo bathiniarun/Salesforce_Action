@@ -6,6 +6,18 @@ on:
 jobs:
   pr-creation:
     name: Create Pull Request
+
+name: Create PR
+
+on:
+  push:
+    branches:
+      - 'WI-*'  # Triggers on pushes to WI-* branches
+
+jobs:
+  pr-creation:
+    name: Create PR
+
     runs-on: ubuntu-latest
     steps:
       # Step 1: Checkout code
@@ -92,4 +104,3 @@ jobs:
           else
             echo "No merge conflicts found."
           fi
-
