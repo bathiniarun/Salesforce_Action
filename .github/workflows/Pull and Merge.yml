@@ -1,3 +1,12 @@
+on:
+  push:
+    branches:
+      - 'feature/*'  # Triggers on pushes to feature/* branches
+
+jobs:
+  pr-creation:
+    name: Create Pull Request
+
 name: Create PR
 
 on:
@@ -8,6 +17,7 @@ on:
 jobs:
   pr-creation:
     name: Create PR
+
     runs-on: ubuntu-latest
     steps:
       # Step 1: Checkout code
@@ -66,3 +76,31 @@ jobs:
       # Step 5: Build project
       - name: Build project
         run: npm run build
+
+  check-conflicts:
+    name: Check Merge Conflicts
+    runs-on: ubuntu-latest
+    needs: pr-creation
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Check for merge conflicts
+      - name: Check Merge Conflicts
+        run: |
+
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+          # Fetch the base branch (Dev) and merge into the current feature branch
+          git fetch origin Dev
+          git merge origin/Dev '--on-commmit'
+
+          # Check if there were any conflicts
+          if [ "$(git ls-files -u | wc -l)" -gt 0 ]; then
+            echo "Merge conflicts detected!"
+            exit 1
+          else
+            echo "No merge conflicts found."
+          fi
