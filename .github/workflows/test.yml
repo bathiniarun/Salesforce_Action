@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - "main"
+      - "master"
 name: Deploy to Salesforce Production
 jobs:
   deploy:
@@ -9,6 +9,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      # Add this step to remove .gitmodules from the repository
+      - name: Remove .gitmodules
+        run: rm .gitmodules
 
       - name: Setup Node
         uses: actions/setup-node@v3
