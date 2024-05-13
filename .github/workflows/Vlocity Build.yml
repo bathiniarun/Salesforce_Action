@@ -25,10 +25,10 @@ jobs:
         uses: sfdx-actions/setup-sfdx@v1
       
       - name: Install dependencies
-        run: npm install
+        run: npm install –global vlocity
 
       - name: Build project
-        run: npm run build
+        run: npm run build 
         
       # Upload artifact
       - name: Upload artifact
