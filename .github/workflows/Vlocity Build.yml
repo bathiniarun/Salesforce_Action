@@ -28,12 +28,14 @@ jobs:
       - name: Build project
         run: npm run build 
         
-      # Upload artifact
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: vlocity-build-artifact
-          path: .github/workflows
+        # Deploy Salesforce code to specified org
+      - name: Deploy to Salesforce
+        run: |
+          sfdx force:auth:web:login -r https://bermtecinc-dev-ed.develop.my.salesforce.com -a SalesforceOrg
+          sfdx force:source:deploy -p force-app/main/default -u SalesforceOrg
+
+        
+
 
 
    
