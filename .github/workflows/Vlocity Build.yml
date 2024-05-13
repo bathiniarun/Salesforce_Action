@@ -1,4 +1,5 @@
-name: Build 
+name: Vlocity Build
+
 
 on:
   push:
@@ -46,5 +47,5 @@ jobs:
           path: .github/workflows
 
 
-    name: CD Deploy to Salesforce DevOps Center Evn 
+   
 
