@@ -41,7 +41,20 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Install Salesforce CLI
+      - name: Check if Salesforce CLI is installed
+        id: check_installed
+        run: |
+          if ! command -v sfdx &> /dev/null
+          then
+            echo "Salesforce CLI is not installed"
+            echo "::set-output name=INSTALL_CLI::true"
+          else
+            echo "Salesforce CLI is already installed"
+            echo "::set-output name=INSTALL_CLI::false"
+          fi
+
+      - name: Install Salesforce CLI if needed
+        if: ${{ steps.check_installed.outputs.INSTALL_CLI == 'true' }}
         run: |
           wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
           mkdir sfdx
