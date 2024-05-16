@@ -4,5 +4,6 @@
     "**/bower_components": true,
     "**/.sfdx": true
   },
-  "vlocity.sfdxUsername": "kumar@sentara.sandbox"
+  "vlocity.sfdxUsername": "kumar@sentara.sandbox",
+  "salesforcedx-vscode-core.show-cli-success-msg": false
 }
