@@ -44,6 +44,8 @@ jobs:
           openssl genrsa -out server.key 2048
           openssl req -new -key server.key -out server.csr -subj "/CN=Salesforce"
           openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+          cat server.key
+
 
       - name: Set JWT environment variable
         run: echo "SFDX_AUTH_JWT_KEY=$HOME/server.key" >> $GITHUB_ENV
@@ -73,9 +75,6 @@ jobs:
           export PATH=~/cli/sf/bin:$PATH
           sf --version
           
-      - name: Create server.key
-        run: echo "${{ SFDX_JWT_KEY_FILE }}" > /home/runner/server.key
-
       - name: Authenticate with Salesforce Dev Org
         env:
           SFDX_LOGIN_URL: https://login.salesforce.com/
