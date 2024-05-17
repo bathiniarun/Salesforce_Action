@@ -72,6 +72,9 @@ jobs:
           tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
           export PATH=~/cli/sf/bin:$PATH
           sf --version
+          
+      - name: Create server.key
+        run: echo "${{ SFDX_JWT_KEY_FILE }}" > /home/runner/server.key
 
       - name: Authenticate with Salesforce Dev Org
         env:
