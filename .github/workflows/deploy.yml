@@ -41,42 +41,28 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Check if Salesforce CLI is installed
-        id: check_installed
-        run: |
-          if ! command -v sfdx &> /dev/null
-          then
-            echo "Salesforce CLI is not installed"
-            echo "::set-output name=INSTALL_CLI::true"
-          else
-            echo "Salesforce CLI is already installed"
-            echo "::set-output name=INSTALL_CLI::false"
-          fi
-
-      - name: Install Salesforce CLI if needed
-        if: ${{ steps.check_installed.outputs.INSTALL_CLI == 'true' }}
+      - name: Install Salesforce CLI
         run: |
           wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
           mkdir -p ~/cli/sf
           tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
           export PATH=~/cli/sf/bin:$PATH
-          PATH=~/cli/sf/bin:$PATH
           sf --version
 
       - name: Authenticate with Salesforce Dev Org
         env:
-          SFDX_LOGIN_URL: sxbandi@sentara.com.sentarahealth.cicd1
-          SFDX_USERNAME: 0SO5Y000000LIQc
-          SFDX_CLIENT_ID: 3MVG9JJwBBbcN47LO.vTT_CuU2g_gOobvkFW3lcm5J9OhnKThVjeErP8nFpqlUBHxU4E6zhW86Kv.MLKY.XPE
-          SFDX_CLIENT_SECRET: 6Cel800Dak000002ErMl888ak00000025ur4jIfzL90LirG8A6WrzdodLI3s7CGXJ66BntooLh64jRlLIVly92lhpOddyGwTGCFgwJp8q30
-          SFDX_JWT_KEY_FILE: 4CC66C0DD74D330BA64DE24245C5F6995A902E47E0BA75F473DBE3C7C0A36CE5
+          SFDX_LOGIN_URL: ${{ secrets.SFDX_LOGIN_URL }}
+          SFDX_USERNAME: ${{ secrets.SFDX_USERNAME }}
+          SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
+          SFDX_CLIENT_SECRET: ${{ secrets.SFDX_CLIENT_SECRET }}
+          SFDX_JWT_KEY_FILE: ${{ secrets.SFDX_JWT_KEY_FILE }}
         run: |
           export PATH=~/cli/sf/bin:$PATH
           sf org login jwt --client-id $SFDX_CLIENT_ID --jwt-key-file $SFDX_JWT_KEY_FILE --username $SFDX_USERNAME --instance-url $SFDX_LOGIN_URL --set-default-dev-hub --alias my-dev-org
 
       - name: Deploy Vlocity Components
-    env:
-      SFDX_PACKAGE_PATH: 'path/to/your/vlocity/package'
-      run: |
-       export PATH=~/cli/sf/bin:$PATH
-       sf deploy metadata --source-path $SFDX_PACKAGE_PATH --target-org my-dev-org
+        env:
+          SFDX_PACKAGE_PATH: 'path/to/your/vlocity/package'
+        run: |
+          export PATH=~/cli/sf/bin:$PATH
+          sf deploy metadata --source-path $SFDX_PACKAGE_PATH --target-org my-dev-org
