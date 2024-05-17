@@ -65,15 +65,13 @@ jobs:
             echo "::set-output name=INSTALL_CLI::false"
           fi
 
-      - name: Install Salesforce CLI if needed
-        if: ${{ steps.check_installed.outputs.INSTALL_CLI == 'true' }}
+      - name: Install Salesforce CLI
         run: |
-          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-          mkdir sfdx
-          tar xJf sfdx-linux-amd64.tar.xz -C sfdx --strip-components 1
-          sudo ./sfdx/install
-        env:
-          SFDX_AUTOUPDATE_DISABLE: true
+          wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
+          mkdir -p ~/cli/sf
+          tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
+          export PATH=~/cli/sf/bin:$PATH
+          sf --version
 
       - name: Authenticate with Salesforce Dev Org
         env:
