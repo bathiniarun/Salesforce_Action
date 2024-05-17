@@ -51,8 +51,8 @@ jobs:
 
       - name: Authenticate with Salesforce Dev Org
         env:
-          SFDX_LOGIN_URL: sxbandi@sentara.com.sentarahealth.cicd1
-          SFDX_USERNAME: 0SO5Y000000LIQc
+          SFDX_LOGIN_URL: https://saforceit6-dev-ed.develop.my.salesforce.com/
+          SFDX_USERNAME: sam.nathan3699@devops.com
           SFDX_CLIENT_ID: 3MVG9JJwBBbcN47LO.vTT_CuU2g_gOobvkFW3lcm5J9OhnKThVjeErP8nFpqlUBHxU4E6zhW86Kv.MLKY.XPE
           SFDX_CLIENT_SECRET: 6Cel800Dak000002ErMl888ak00000025ur4jIfzL90LirG8A6WrzdodLI3s7CGXJ66BntooLh64jRlLIVly92lhpOddyGwTGCFgwJp8q30
           SFDX_JWT_KEY_FILE: 4CC66C0DD74D330BA64DE24245C5F6995A902E47E0BA75F473DBE3C7C0A36CE5
