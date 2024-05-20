@@ -47,10 +47,17 @@ jobs:
           cat server.key
 
       - name: Set JWT environment variable
-        run: echo "SFDX_AUTH_JWT_KEY=$HOME/server.key" >> $GITHUB_ENV
+        run: echo "JWT_SECRET=$JWT_SECRET" >> $GITHUB_ENV
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+      - name: Verify JWT Secret is set
+        run: echo "JWT_SECRET is set to: $JWT_SECRET"
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '14'
 
@@ -66,24 +73,25 @@ jobs:
             echo "::set-output name=INSTALL_CLI::false"
           fi
 
-      - name: Install Salesforce CLI
+      - name: Install Salesforce CLI (if needed)
+        if: steps.check_installed.outputs.INSTALL_CLI == 'true'
         run: |
           wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
           mkdir -p ~/cli/sf
           tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
           export PATH=~/cli/sf/bin:$PATH
           sf --version
-          
+
       - name: Authenticate with Salesforce Dev Org
         env:
           SFDX_LOGIN_URL: https://login.salesforce.com/
           SFDX_USERNAME: sam.nathan3699@devops.com
           SFDX_CLIENT_ID: 3MVG9JJwBBbcN47LO.vTT_CuU2g_gOobvkFW3lcm5J9OhnKThVjeErP8nFpqlUBHxU4E6zhW86Kv.MLKY.XPE
           SFDX_CLIENT_SECRET: 6Cel800Dak000002ErMl888ak00000025ur4jIfzL90LirG8A6WrzdodLI3s7CGXJ66BntooLh64jRlLIVly92lhpOddyGwTGCFgwJp8q30
-          SFDX_JWT_KEY_FILE: ${{ env.SFDX_AUTH_JWT_KEY }}
+          SFDX_AUTH_JWT_KEY: ${{ env.JWT_SECRET }}
         run: |
           export PATH=~/cli/sf/bin:$PATH
-          sf org login jwt --client-id $SFDX_CLIENT_ID --jwt-key-file $SFDX_JWT_KEY_FILE --username $SFDX_USERNAME --instance-url $SFDX_LOGIN_URL --set-default-dev-hub --alias my-dev-org
+          sf org login jwt --client-id $SFDX_CLIENT_ID --jwt-key-file server.key --username $SFDX_USERNAME --instance-url $SFDX_LOGIN_URL --set-default-dev-hub --alias my-dev-org
 
       - name: Deploy Vlocity Components
         env:
