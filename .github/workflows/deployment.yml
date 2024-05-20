@@ -51,11 +51,6 @@ jobs:
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-      - name: Verify JWT Secret is set
-        run: echo "JWT_SECRET is set to: $JWT_SECRET"
-        env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
