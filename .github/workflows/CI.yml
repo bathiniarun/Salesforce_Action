@@ -1,14 +1,14 @@
-name: Salesforce CLI Authentication
+name: Build and Deploy Vlocity Components to Dev Org
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
-  auth:
+  build:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
