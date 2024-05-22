@@ -39,11 +39,5 @@ jobs:
           echo 'export PATH="$PATH:$(npm prefix -g)/bin"' >> $GITHUB_ENV
 
       - name: Authenticate to Salesforce
-        env:
-          SF_AUTOUPDATE_DISABLE: 'true'
-          SFDX_CLIENT_ID: 3MVG9JJwBBbcN47LO.vTT_CuU2g_gOobvkFW3lcm5J9OhnKThVjeErP8nFpqlUBHxU4E6zhW86Kv.MLKY.XPE
-          SFDX_USERNAME: 6Cel800Dak000002ErMl888ak00000025ur4jIfzL90LirG8A6WrzdodLI3s7CGXJ66BntooLh64jRlLIVly92lhpOddyGwTGCFgwJp8q30
-          SFDX_LOGIN_URL: https://login.salesforce.com/
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
-          sf auth:jwt:grant --client-id $SFDX_CLIENT_ID --jwt-key-file server.key --username $SFDX_USERNAME --set-default-dev-hub --alias my-dev-org --instance-url $SFDX_LOGIN_URL
+          sf auth:jwt:grant --client-id PlatformCLI --jwt-key-file server.key --username kumar@sentara.sandbox --set-default-dev-hub --alias vscodeOrg --instance-url force://PlatformCLI::5Aep861bSJ5n8tQ35Ph3lqII695fiTenol.Wy7FF.y9gL5rLbcmHLBy4h9EduRmepHRvYIiSFvGuiykRLO8HWIC@bermtecinc-dev-ed.develop.my.salesforce.com
