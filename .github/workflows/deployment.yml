@@ -61,10 +61,12 @@ jobs:
         if: always()
         run: |
           if ! command -v sfdx &> /dev/null; then
-            wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-            mkdir sfdx
-            tar xJf sfdx-linux-amd64.tar.xz -C sfdx --strip-components 1
-            sudo ./sfdx/install
+            wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
+            mkdir -p ~/cli/sf
+            tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
+            export PATH=~/cli/sf/bin:$PATH
+            PATH=~/cli/sf/bin:$PATH
+            sf --version
           fi
         env:
           SFDX_AUTOUPDATE_DISABLE: true
@@ -77,10 +79,10 @@ jobs:
           SFDX_CLIENT_SECRET: 6Cel800Dak000002ErMl888ak00000025ur4jIfzL90LirG8A6WrzdodLI3s7CGXJ66BntooLh64jRlLIVly92lhpOddyGwTGCFgwJp8q30
           SFDX_AUTH_JWT_KEY: ${{ env.JWT_SECRET }}
         run: |
-          sfdx auth:jwt:grant --clientid $SFDX_CLIENT_ID --jwtkeyfile server.key --username $SFDX_USERNAME --setdefaultdevhubusername --setalias my-dev-org --instanceurl $SFDX_LOGIN_URL
+          sf auth:jwt:grant --clientid $SFDX_CLIENT_ID --jwtkeyfile server.key --username $SFDX_USERNAME --setdefaultdevhubusername --setalias my-dev-org --instanceurl $SFDX_LOGIN_URL
 
       - name: Deploy Vlocity Components
         env:
           SFDX_PACKAGE_PATH: 'path/to/your/vlocity/package'
         run: |
-          sfdx force:source:deploy --sourcepath $SFDX_PACKAGE_PATH --targetusername my-dev-org
+          sf force:source:deploy --sourcepath $SFDX_PACKAGE_PATH --targetusername my-dev-org
