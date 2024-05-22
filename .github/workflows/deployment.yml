@@ -46,4 +46,4 @@ jobs:
           SFDX_LOGIN_URL: https://login.salesforce.com/
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
-          sf auth:jwt:grant --client-id $SFDX_CLIENT_ID --jwt-key-file server.key --username $SFDX_USERNAME --set-default-dev-hub-username --setalias my-dev-org --instance-url $SFDX_LOGIN_URL
+          sf auth:jwt:grant --client-id $SFDX_CLIENT_ID --jwt-key-file server.key --username $SFDX_USERNAME --set-default-dev-hub --alias my-dev-org --instance-url $SFDX_LOGIN_URL
