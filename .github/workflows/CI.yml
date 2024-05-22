@@ -21,13 +21,23 @@ jobs:
     - name: Install Salesforce CLI
       run: |
         npm install -g @salesforce/cli
-        echo "::add-path::$(npm bin -g)"
+        echo "$(npm bin -g)" >> $GITHUB_PATH
 
     - name: Authenticate to Salesforce
       env:
         SF_AUTOUPDATE_DISABLE: 'true'
-        SFDX_CLIENT_ID: ${{ secrets.SFDX_CLIENT_ID }}
-        SFDX_USERNAME: ${{ secrets.SFDX_USERNAME }}
-        SFDX_LOGIN_URL: ${{ secrets.SFDX_LOGIN_URL }}
+        SFDX_CLIENT_ID: 3MVG9JJwBBbcN47LO.vTT_CuU2g_gOobvkFW3lcm5J9OhnKThVjeErP8nFpqlUBHxU4E6zhW86Kv.MLKY.XPE
+        SFDX_USERNAME: 6Cel800Dak000002ErMl888ak00000025ur4jIfzL90LirG8A6WrzdodLI3s7CGXJ66BntooLh64jRlLIVly92lhpOddyGwTGCFgwJp8q30
+        SFDX_LOGIN_URL: https://login.salesforce.com/
+        JWT_KEY: ${{ secrets.JWT_KEY }}
       run: |
-        sf auth:jwt:grant --clientid $SFDX_CLIENT_ID --jwtkeyfile server.key --username $SFDX_USERNAME --setdefaultdevhubusername --setalias my-dev-org --instanceurl $SFDX_LOGIN_URL
+        echo "$JWT_KEY" > jwt.key
+        sf auth:jwt:grant --clientid $SFDX_CLIENT_ID --jwtkeyfile jwt.key --username $SFDX_USERNAME --setdefaultdevhubusername --setalias my-dev-org --instanceurl $SFDX_LOGIN_URL
+
+    - name: Build project
+      run: npm run build
+
+    - name: Deploy Vlocity Components
+      env:
+        SFDX_PACKAGE_PATH: 'path/to/your/vlocity/package'
+      run: sf deploy metadata --sourcepath $SFDX_PACKAGE_PATH --targetusername my-dev-org
