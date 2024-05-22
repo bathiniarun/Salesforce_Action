@@ -10,40 +10,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Install Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20.12.2'
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-    - name: Install OpenSSL
-      run: sudo apt-get install -y openssl
+      - name: Install OpenSSL
+        run: sudo apt-get install -y openssl
 
-    - name: Generate server.key
-      run: |
-        openssl genrsa -out server.key 2048
-        openssl req -new -key server.key -out server.csr -subj "/CN=Salesforce"
-        openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
-        cat server.key
+      - name: Generate server.key
+        run: |
+          openssl genrsa -out server.key 2048
+          openssl req -new -key server.key -out server.csr -subj "/CN=Salesforce"
+          openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+          cat server.key
 
-    - name: Set JWT environment variable
-      run: echo "JWT_SECRET=$JWT_SECRET" >> $GITHUB_ENV
-      env:
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      - name: Set JWT environment variable
+        run: echo "JWT_SECRET=$JWT_SECRET" >> $GITHUB_ENV
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-    - name: Install Salesforce CLI
-      run: |
-        npm install -g @salesforce/cli
-        echo "::add-path::$(npm bin -g)"
+      - name: Install Salesforce CLI
+        run: |
+          npm install -g @salesforce/cli
+          echo 'export PATH="$PATH:$(npm prefix -g)/bin"' >> $GITHUB_ENV
 
-    - name: Authenticate to Salesforce
-      env:
-        SF_AUTOUPDATE_DISABLE: 'true'
-        SFDX_CLIENT_ID: 3MVG9JJwBBbcN47LO.vTT_CuU2g_gOobvkFW3lcm5J9OhnKThVjeErP8nFpqlUBHxU4E6zhW86Kv.MLKY.XPE
-        SFDX_USERNAME: 6Cel800Dak000002ErMl888ak00000025ur4jIfzL90LirG8A6WrzdodLI3s7CGXJ66BntooLh64jRlLIVly92lhpOddyGwTGCFgwJp8q30
-        SFDX_LOGIN_URL: https://login.salesforce.com/
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      run: |
-        sf auth:jwt:grant --clientid $SFDX_CLIENT_ID --jwtkeyfile server.key --username $SFDX_USERNAME --setdefaultdevhubusername --setalias my-dev-org --instanceurl $SFDX_LOGIN_URL
+      - name: Authenticate to Salesforce
+        env:
+          SF_AUTOUPDATE_DISABLE: 'true'
+          SFDX_CLIENT_ID: 3MVG9JJwBBbcN47LO.vTT_CuU2g_gOobvkFW3lcm5J9OhnKThVjeErP8nFpqlUBHxU4E6zhW86Kv.MLKY.XPE
+          SFDX_USERNAME: 6Cel800Dak000002ErMl888ak00000025ur4jIfzL90LirG8A6WrzdodLI3s7CGXJ66BntooLh64jRlLIVly92lhpOddyGwTGCFgwJp8q30
+          SFDX_LOGIN_URL: https://login.salesforce.com/
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          sf auth:jwt:grant --clientid $SFDX_CLIENT_ID --jwtkeyfile server.key --username $SFDX_USERNAME --setdefaultdevhubusername --setalias my-dev-org --instanceurl $SFDX_LOGIN_URL
