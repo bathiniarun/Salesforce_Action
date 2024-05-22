@@ -1,88 +1,49 @@
-
-name: Build and Deploy Vlocity Components to Dev Org
+name: Salesforce CLI Authentication
 
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
-  build:
+  auth:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '14'
+    - name: Install Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20.12.2'
 
-      - name: Install Salesforce CLI
-        uses: sfdx-actions/setup-sfdx@v1
+    - name: Install OpenSSL
+      run: sudo apt-get install -y openssl
 
-      - name: Install Vlocity
-        run: npm install -g vlocity
+    - name: Generate server.key
+      run: |
+        openssl genrsa -out server.key 2048
+        openssl req -new -key server.key -out server.csr -subj "/CN=Salesforce"
+        openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+        cat server.key
 
-      - name: Build project
-        run: npm run build
+    - name: Set JWT environment variable
+      run: echo "JWT_SECRET=$JWT_SECRET" >> $GITHUB_ENV
+      env:
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-  deploy:
-    needs: build
-    if: ${{ success() }}
-    runs-on: ubuntu-latest
+    - name: Install Salesforce CLI
+      run: |
+        npm install -g @salesforce/cli
+        echo "::add-path::$(npm bin -g)"
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install OpenSSL
-        run: sudo apt-get install -y openssl
-
-      - name: Generate server.key
-        run: |
-          openssl genrsa -out server.key 2048
-          openssl req -new -key server.key -out server.csr -subj "/CN=Salesforce"
-          openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
-          cat server.key
-
-      - name: Set JWT environment variable
-        run: echo "JWT_SECRET=$JWT_SECRET" >> $GITHUB_ENV
-        env:
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '14'
-
-      - name: Install Salesforce CLI
-        if: always()
-        run: |
-          if ! command -v sfdx &> /dev/null; then
-            wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
-            mkdir -p ~/cli/sf
-            tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
-            export PATH=~/cli/sf/bin:$PATH
-            PATH=~/cli/sf/bin:$PATH
-            sf --version
-          fi
-        env:
-          SFDX_AUTOUPDATE_DISABLE: true
-
-      - name: Authenticate with Salesforce Dev Org
-        env:
-          SFDX_LOGIN_URL: https://login.salesforce.com/
-          SFDX_USERNAME: sam.nathan3699@devops.com
-          SFDX_CLIENT_ID: 3MVG9JJwBBbcN47LO.vTT_CuU2g_gOobvkFW3lcm5J9OhnKThVjeErP8nFpqlUBHxU4E6zhW86Kv.MLKY.XPE
-          SFDX_CLIENT_SECRET: 6Cel800Dak000002ErMl888ak00000025ur4jIfzL90LirG8A6WrzdodLI3s7CGXJ66BntooLh64jRlLIVly92lhpOddyGwTGCFgwJp8q30
-          SFDX_AUTH_JWT_KEY: ${{ env.JWT_SECRET }}
-        run: |
-          sf auth:jwt:grant --clientid $SFDX_CLIENT_ID --jwtkeyfile server.key --username $SFDX_USERNAME --setdefaultdevhubusername --setalias my-dev-org --instanceurl $SFDX_LOGIN_URL
-
-      - name: Deploy Vlocity Components
-        env:
-          SFDX_PACKAGE_PATH: 'path/to/your/vlocity/package'
-        run: |
-          sf force:source:deploy --sourcepath $SFDX_PACKAGE_PATH --targetusername my-dev-org
+    - name: Authenticate to Salesforce
+      env:
+        SF_AUTOUPDATE_DISABLE: 'true'
+        SFDX_CLIENT_ID: 3MVG9JJwBBbcN47LO.vTT_CuU2g_gOobvkFW3lcm5J9OhnKThVjeErP8nFpqlUBHxU4E6zhW86Kv.MLKY.XPE
+        SFDX_USERNAME: 6Cel800Dak000002ErMl888ak00000025ur4jIfzL90LirG8A6WrzdodLI3s7CGXJ66BntooLh64jRlLIVly92lhpOddyGwTGCFgwJp8q30
+        SFDX_LOGIN_URL: https://login.salesforce.com/
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      run: |
+        sf auth:jwt:grant --clientid $SFDX_CLIENT_ID --jwtkeyfile server.key --username $SFDX_USERNAME --setdefaultdevhubusername --setalias my-dev-org --instanceurl $SFDX_LOGIN_URL
