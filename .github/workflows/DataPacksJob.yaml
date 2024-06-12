@@ -1,8 +1,8 @@
-projectPath: VlocityCard/VlocityCard/test2/VlocityCard/test2
+projectPath: VlocityCard
 Name: manage component
 ignoreDependencies: false
 VlocityDataPackKeys:
-    - VlocityCard
+    - VlocityCard/kumartest
 VlocityTypesToFetch:
-    - VlocityCard
+    - VlocityCard/
 SalesforceTypesToFetch:
