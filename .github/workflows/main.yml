@@ -38,4 +38,4 @@ jobs:
           sfdx force:org:display -u bxkumar1@sentara.com.cicd2
 
       - name: Deploy Vlocity
-        run: npm run deploy:vlocity
+        run: npm run packDeploy
