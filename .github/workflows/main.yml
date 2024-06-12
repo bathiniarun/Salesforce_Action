@@ -1,0 +1,41 @@
+name: Build and Deploy Vlocity Code
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: Install Salesforce CLI
+        run: |
+          npm install -g sfdx-cli --global
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run build script
+        run: npm run build
+
+      - name: Authorize Salesforce DeployTestOrg Org
+        run: |
+         sfdx force:auth:jwt:grant --clientid 3MVG9NYvTkhtdEI5Z9dZmBB.toZ_f9ZTkCtyPmQsts6QEJINuMe.ywRNgQcUztn1n6Aw8r8OZ0uJHhAIos7nX --jwtkeyfile mycerts/mycerts/server.key --username bxkumar1@sentara.com.cicd2 --instanceurl https://sentarahealth--cicd2.sandbox.my.salesforce.com 
+    
+      - name: Verify Salesforce Connection
+        id: verify_connection
+        run: |
+          sfdx force:org:display -u bxkumar1@sentara.com.cicd2
+
+      - name: Deploy Vlocity
+        run: npm run deploy:vlocity
