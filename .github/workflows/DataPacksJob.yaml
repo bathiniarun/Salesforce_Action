@@ -1,0 +1,8 @@
+projectPath: VlocityCard
+Name: manage component
+ignoreDependencies: false
+VlocityDataPackKeys:
+    - VlocityCard
+VlocityTypesToFetch:
+    - VlocityCard
+SalesforceTypesToFetch:
