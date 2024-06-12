@@ -4,6 +4,7 @@
     "**/bower_components": true,
     "**/.sfdx": true
   },
-  "vlocity.sfdxUsername": "kumar@sentara.sandbox",
-  "salesforcedx-vscode-core.show-cli-success-msg": false
+  "vlocity.sfdxUsername": "bxkumar1@sentara.com.cicd1",
+  "salesforcedx-vscode-core.show-cli-success-msg": false,
+  "vlocity.projectPath": "/Users/arunkumarbathini/Downloads/salesforce CICD/Salesforce_Action"
 }
